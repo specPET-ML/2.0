@@ -82,6 +82,21 @@ function installAndConfigureApache
     } &>> $LOG_PATH
 }
 
+function installAndConfigureMySQL
+{
+    local password=$1
+    local time=$(date "+%Y-%m-%d %H:%M:%S")
+
+    echo -e "${GREEN}[${time}][System] Instalacja oraz konfiguracja MySQL 5.6.${NORMAL}" 
+
+    {
+	export DEBIAN_FRONTEND="noninteractive"
+        sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $password"
+        sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $password"
+        sudo apt-get install -y mysql-server-5.6
+    } &>> $LOG_PATH
+}
+
 # Konfiguracja systemu.
 #eval configureSystem
 
@@ -96,3 +111,6 @@ eval installAndConfigureApache
 
 # Instalacja PHP
 eval installAndConfigurePHP
+
+# MySQL 5.6.
+eval installAndConfigureMySQL root
